@@ -96,7 +96,6 @@ int main(void) {
   dimensions_t dimensions = {0};
 
   while ((len = aoc_get_line(line, MAX_LINE)) > 0) {
-    box_required_paper = 0;
     if (parse_dimensions(&dimensions, line, len) != AOC_OK) {
       aoc_fatalf("error parsing line: %s\n", line);
     }
