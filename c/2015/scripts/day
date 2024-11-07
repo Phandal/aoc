@@ -25,8 +25,7 @@ def createMakefile():
         fd.write(makefile)
 
 def partStr(num):
-    return '''
-#include <aoc.h>
+    return '''#include <aoc.h>
 #include <stdio.h>
 
 int main(void) {{
@@ -34,7 +33,7 @@ int main(void) {{
 
     return 0;
 }}
-    '''.format(num)
+'''.format(num)
 
 def createPart(num):
     name = f'part{num}.c'
@@ -46,6 +45,9 @@ def main():
 
     createMakefile()
     print('Created Makefile')
+
+    os.mkdir('input')
+    print('Created input directory')
 
     os.mkdir('src')
     os.chdir('src')
