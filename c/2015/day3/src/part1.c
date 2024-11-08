@@ -1,13 +1,3 @@
-/**
- * Steps to complete
- * - Create a Linked List in the AOC library
- * - Store each coordinate in the list { int x, int y}
- * - As coordinates are parsed, if a coordinate already exists in the list,
- *     skip it and move on
- * - Show the length of the list as the number of houses that have received at
- *      least one present.
- */
-
 #include <aoc.h>
 #include <stdio.h>
 #include <stdlib.h>
