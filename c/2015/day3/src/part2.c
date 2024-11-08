@@ -64,18 +64,18 @@ int main(void) {
       continue;
     }
 
-    printf("c = %c\n", c);
-    printf("State: %s\n", state == SANTA ? "Santa" : "Robot");
+    /*printf("c = %c\n", c);*/
+    /*printf("State: %s\n", state == SANTA ? "Santa" : "Robot");*/
 
     if (linked_list_find(&list, active_coord, (equal_fn)coordinate_equal) !=
         NULL) {
-      printf("Found { %d, %d}\n", active_coord->x, active_coord->y);
+      /*printf("Found { %d, %d}\n", active_coord->x, active_coord->y);*/
     } else {
-      printf("Adding { %d, %d}\n", active_coord->x, active_coord->y);
+      /*printf("Adding { %d, %d}\n", active_coord->x, active_coord->y);*/
       linked_list_add(&list, active_coord, sizeof(coordinate_t));
     }
 
-    printf("List Length: %lu\n", list.length);
+    /*printf("List Length: %lu\n", list.length);*/
     if (state == SANTA) {
       active_coord = &robot_coord;
       state = ROBOT;

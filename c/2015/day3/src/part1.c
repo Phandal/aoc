@@ -71,7 +71,7 @@ int main(void) {
 
   printf("Number of houses that have received one present: %lu\n", list.length);
 
-  linked_list_free(&list, free);
+  linked_list_free(&list, NULL);
 
   return 0;
 }

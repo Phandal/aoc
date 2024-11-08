@@ -1,4 +1,5 @@
 #include <aoc.h>
+#include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,8 @@ void aoc_fatalf(char *fmt, ...) {
 }
 
 int aoc_get_line(char line[], size_t max) {
+  assert(line != NULL);
+
   int c;
   size_t i = 0;
 
@@ -30,6 +33,8 @@ int aoc_get_line(char line[], size_t max) {
 char *aoc_hello(void) { return "Hello AOC!"; }
 
 size_t linked_list_add(linked_list_t *list, void *data, size_t nbytes) {
+  assert(list != NULL);
+
   node_t *node;
   node_t *temp;
 
@@ -58,6 +63,8 @@ size_t linked_list_add(linked_list_t *list, void *data, size_t nbytes) {
 }
 
 void *linked_list_find(linked_list_t *list, void *data, equal_fn equal_fn) {
+  assert(list != NULL);
+
   for (node_t *node = list->node; node != NULL; node = node->next) {
     int result = equal_fn(data, node->data);
     if (result == AOC_LL_ERROR) {
@@ -73,6 +80,12 @@ void *linked_list_find(linked_list_t *list, void *data, equal_fn equal_fn) {
 }
 
 void linked_list_free(linked_list_t *list, free_fn free_fn) {
+  assert(list != NULL);
+
+  if (free_fn == NULL) {
+    free_fn = free;
+  }
+
   node_t *temp = NULL;
   for (node_t *node = list->node; node != NULL; node = temp) {
     temp = node->next;
