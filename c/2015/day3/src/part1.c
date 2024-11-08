@@ -39,9 +39,9 @@ int main(void) {
   coordinate_t coord = {0, 0};
   int c;
 
-  printf("Adding { %d, %d}\n", coord.x, coord.y);
+  /*printf("Adding { %d, %d}\n", coord.x, coord.y);*/
   linked_list_add(&list, &coord, sizeof(coordinate_t));
-  printf("List Length: %lu\n", list.length);
+  /*printf("List Length: %lu\n", list.length);*/
 
   while ((c = getchar()) != EOF) {
     if (c == '<') {
@@ -56,17 +56,17 @@ int main(void) {
       continue;
     }
 
-    printf("c = %c\n", c);
+    /*printf("c = %c\n", c);*/
 
     if (linked_list_find(&list, &coord, (equal_fn)coordinate_equal) != NULL) {
-      printf("Found { %d, %d}\n", coord.x, coord.y);
+      /*printf("Found { %d, %d}\n", coord.x, coord.y);*/
       continue;
     } else {
-      printf("Adding { %d, %d}\n", coord.x, coord.y);
+      /*printf("Adding { %d, %d}\n", coord.x, coord.y);*/
       linked_list_add(&list, &coord, sizeof(coordinate_t));
     }
 
-    printf("List Length: %lu\n", list.length);
+    /*printf("List Length: %lu\n", list.length);*/
   }
 
   printf("Number of houses that have received one present: %lu\n", list.length);

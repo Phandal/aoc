@@ -1,7 +1,7 @@
 #ifndef AOC_H
 #define AOC_H
 
-#include <_stdio.h>
+#include <stdio.h>
 
 enum {
   AOC_ERR = -1,
