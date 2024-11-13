@@ -6,7 +6,7 @@ all: part1 part2
 part1: src/part1.o src/lexer.o src/parser.o
 	$(CC) $(CFLAGS) -L../lib -glldb -o part1 $^ -laoc
 
-part2: src/part2.o
+part2: src/part2.o src/lexer.o src/parser.o
 	$(CC) $(CFLAGS) -L../lib -o part2 $^ -laoc
 
 src/%.o: src/%.c
