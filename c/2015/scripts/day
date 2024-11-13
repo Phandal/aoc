@@ -29,9 +29,9 @@ def partStr(num):
 #include <stdio.h>
 
 int main(void) {{
-    printf("Hello, Part{}!\\n");
+  printf("Hello, Part{}!\\n");
 
-    return 0;
+  return 0;
 }}
 '''.format(num)
 
