@@ -21,12 +21,18 @@ int check_contains_two_pairs(char *line, size_t len) {
     first_pair.second = line[i + 1];
 
     for (size_t j = 0; j < (len - 1); ++j) {
-      if (j == i || j + 1 == i) {
+      /*printf("%lu | %lu\n", i, j);*/
+      if (j == i || (j - 1) == i || (j + 1) == i) {
         continue;
       }
 
       second_pair.first = line[j];
       second_pair.second = line[j + 1];
+
+      /*printf("%c %lu %c %lu | %c %lu %c %lu\n", first_pair.first, i,*/
+      /*       first_pair.second, i + 1, second_pair.first, j,
+       * second_pair.second,*/
+      /*       j + 1);*/
 
       if (first_pair.first == second_pair.first &&
           first_pair.second == second_pair.second) {
@@ -39,7 +45,7 @@ int check_contains_two_pairs(char *line, size_t len) {
 }
 
 int check_contains_duplicate_letter_split_by_one(char *line, size_t len) {
-  printf("Len: %lu\n", len);
+  /*printf("Len: %lu\n", len);*/
   if (len < 3) {
     return 0;
   }
@@ -50,6 +56,8 @@ int check_contains_duplicate_letter_split_by_one(char *line, size_t len) {
   for (size_t i = 0; i < (len - 2); ++i) {
     first = line[i];
     third = line[i + 2];
+
+    /*printf("%c %lu | %c %lu\n", first, i, third, i + 2);*/
 
     if (first == third) {
       return 1;
