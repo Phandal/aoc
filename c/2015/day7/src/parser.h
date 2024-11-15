@@ -34,7 +34,7 @@ typedef struct {
     char *wire;
     int signal;
     int literal;
-  };
+  } value;
 } operand_t;
 
 typedef struct {
@@ -90,5 +90,10 @@ int parse(linked_list_t *instructions, parser_t *parser);
  * linked_list_t.
  */
 void parser_destroy(parser_t *parser);
+
+/**
+ * Destroys an `instruction_t`.
+ */
+void instruction_free(void *vinstruction);
 
 #endif // PARSER_H

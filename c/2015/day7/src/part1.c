@@ -29,17 +29,23 @@ int main(void) {
     if (tokenize(&tokens, lexer, line, len) != AOC_OK) {
       aoc_fatalf("%s\n", lexer->error);
     }
-    printf("number of tokens: %lu\n", tokens.length);
-    break;
   }
+  printf("number of tokens: %lu\n\n", tokens.length);
 
   if (parse(&instructions, parser) != AOC_OK) {
     aoc_fatalf("%s\n", parser->error);
   }
-  printf("number of instructions: %lu\n", instructions.length);
+  printf("number of instructions: %lu\n\n", instructions.length);
+
+  node_t *node;
+  for (node = instructions.node; node != NULL; node = node->next) {
+    instruction_t *ins = node->data;
+    printf("type: %d | output: %s\n", ins->input->type, ins->output_wire);
+  }
+  putchar('\n');
 
   linked_list_free(&tokens, token_free);
-  linked_list_free(&instructions, NULL);
+  linked_list_free(&instructions, instruction_free);
   lexer_destroy(lexer);
   parser_destroy(parser);
   return 0;
