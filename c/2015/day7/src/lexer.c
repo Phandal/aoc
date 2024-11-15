@@ -43,7 +43,7 @@ void lexer_errorf(lexer_t *lexer, char *fmt, ...) {
     return;
   }
 
-  lexer->error = (char *)malloc(LEXER_ERROR_SIZE);
+  lexer->error = (char *)malloc(sizeof(char) * LEXER_ERROR_SIZE);
   if (lexer->error == NULL) {
     // TODO: there must be a way that we can signify an error to the caller here
     return;

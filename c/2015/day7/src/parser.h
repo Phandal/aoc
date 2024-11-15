@@ -1,6 +1,8 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#define PARSER_ERROR_SIZE 1000
+
 #include <aoc.h>
 
 typedef enum {
@@ -62,10 +64,12 @@ typedef struct {
 typedef struct {
   operation_t *input;
   char *output_wire;
-} instrucion_t;
+} instruction_t;
 
 typedef struct {
   linked_list_t *tokens;
+  node_t *current;
+  size_t index;
   char *error;
 } parser_t;
 
