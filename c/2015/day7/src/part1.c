@@ -37,12 +37,12 @@ int main(void) {
   }
   printf("number of instructions: %lu\n\n", instructions.length);
 
-  node_t *node;
-  for (node = instructions.node; node != NULL; node = node->next) {
-    instruction_t *ins = node->data;
-    printf("type: %d | output: %s\n", ins->input->type, ins->output_wire);
-  }
-  putchar('\n');
+  /*node_t *node;*/
+  /*for (node = instructions.node; node != NULL; node = node->next) {*/
+  /*  instruction_t *ins = node->data;*/
+  /*  printf("type: %d | output: %s\n", ins->input->type, ins->output_wire);*/
+  /*}*/
+  /*putchar('\n');*/
 
   linked_list_free(&tokens, token_free);
   linked_list_free(&instructions, instruction_free);

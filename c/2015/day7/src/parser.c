@@ -76,25 +76,84 @@ int parse(linked_list_t *instructions, parser_t *parser) {
       operand->type = SIGNAL;
       operand->value.signal = token->value.number;
 
-      assignment_operation =
-          (assignment_operation_t *)malloc(sizeof(assignment_operation_t));
-      assignment_operation->operand = operand;
+      token = parser_advance(parser);
+      if (token == NULL) {
+        parser_errorf(parser, "unexpected end of input\n");
+        return AOC_ERR;
+      }
 
-      operation = (operation_t *)malloc(sizeof(operation_t));
-      operation->type = ASSIGNMENT;
-      operation->operation.assignment = assignment_operation;
+      if (token->type == ARROW) {
+        assignment_operation =
+            (assignment_operation_t *)malloc(sizeof(assignment_operation_t));
+        assignment_operation->operand = operand;
+
+        operation = (operation_t *)malloc(sizeof(operation_t));
+        operation->type = ASSIGNMENT;
+        operation->operation.assignment = assignment_operation;
+      } else {
+        binary_operation =
+            (binary_operation_t *)malloc(sizeof(binary_operation_t));
+        binary_operation->left = operand;
+
+        switch (token->type) {
+        case LSHIFT:
+          binary_operation->operator_type = LSHIFT_O;
+          break;
+        case RSHIFT:
+          binary_operation->operator_type = RSHIFT_O;
+          break;
+        case AND:
+          binary_operation->operator_type = AND_O;
+          break;
+        case OR:
+          binary_operation->operator_type = OR_O;
+          break;
+        default:
+          parser_errorf(parser, "exected arror or binary operation token\n");
+          return AOC_ERR;
+        }
+
+        token = parser_advance(parser);
+        if (token == NULL) {
+          parser_errorf(parser, "unexpected end of input\n");
+          return AOC_ERR;
+        }
+
+        operand = (operand_t *)malloc(sizeof(operand_t));
+        switch (token->type) {
+        case IDENTIFIER:
+          operand->type = WIRE;
+          operand->value.wire =
+              malloc(sizeof(char) * strlen(token->value.string));
+          strncpy(operand->value.wire, token->value.string,
+                  strlen(token->value.string));
+          break;
+        case NUMBER:
+          operand->type = LITERAL;
+          operand->value.literal = token->value.number;
+          break;
+        default:
+          parser_errorf(parser, "expected identifier or number token\n");
+          return AOC_ERR;
+        }
+
+        binary_operation->right = operand;
+        operation = (operation_t *)malloc(sizeof(operation_t));
+        operation->type = BINARY;
+        operation->operation.binary = binary_operation;
+
+        token = parser_advance(parser);
+        if (token == NULL || token->type != ARROW) {
+          parser_errorf(parser, "expected arrow\n");
+          return AOC_ERR;
+        }
+      }
 
       instruction.input = operation;
 
       token = parser_advance(parser);
-      if (token == NULL || token->type != ARROW) {
-        parser_errorf(parser, "expected arrow\n");
-        return AOC_ERR;
-      }
-
-      token = parser_advance(parser);
       if (token == NULL || token->type != IDENTIFIER) {
-        parser_errorf(parser, "expected identifier\n");
+        parser_errorf(parser, "expected identifier (number)\n");
         return AOC_ERR;
       }
 
@@ -104,9 +163,24 @@ int parse(linked_list_t *instructions, parser_t *parser) {
               strlen(token->value.string));
 
       linked_list_add(instructions, &instruction, sizeof(instruction));
-      printf("Added Assignment Operation: %d | %s\n",
-             assignment_operation->operand->value.signal,
-             instruction.output_wire);
+      if (operation->type == ASSIGNMENT) {
+        printf("Added Assignment Operation: %d | %s\n",
+               assignment_operation->operand->value.signal,
+               instruction.output_wire);
+      } else {
+        if (binary_operation->right->type == WIRE) {
+          printf("Added Binary Operation: %d %d %s | %s\n",
+                 binary_operation->left->value.literal,
+                 binary_operation->operator_type,
+                 binary_operation->right->value.wire, instruction.output_wire);
+        } else {
+          printf("Added Binary Operation: %d %d %d | %s\n",
+                 binary_operation->left->value.literal,
+                 binary_operation->operator_type,
+                 binary_operation->right->value.literal,
+                 instruction.output_wire);
+        }
+      }
       break;
     case NOT:
       token = parser_advance(parser);
@@ -116,7 +190,9 @@ int parse(linked_list_t *instructions, parser_t *parser) {
       }
       operand = (operand_t *)malloc(sizeof(operand_t));
       operand->type = WIRE;
-      operand->value.wire = token->value.string;
+      operand->value.wire = malloc(sizeof(char) * strlen(token->value.string));
+      strncpy(operand->value.wire, token->value.string,
+              strlen(token->value.string));
 
       unary_operation = (unary_operation_t *)malloc(sizeof(unary_operation_t));
       unary_operation->operator_type = NOT_O;
@@ -136,7 +212,7 @@ int parse(linked_list_t *instructions, parser_t *parser) {
 
       token = parser_advance(parser);
       if (token == NULL || token->type != IDENTIFIER) {
-        parser_errorf(parser, "expected identifier\n");
+        parser_errorf(parser, "expected identifier (not)\n");
         return AOC_ERR;
       }
 
@@ -153,11 +229,9 @@ int parse(linked_list_t *instructions, parser_t *parser) {
     case IDENTIFIER:
       operand = (operand_t *)malloc(sizeof(operand_t));
       operand->type = WIRE;
-      operand->value.wire = token->value.string;
-
-      binary_operation =
-          (binary_operation_t *)malloc(sizeof(binary_operation_t));
-      binary_operation->left = operand;
+      operand->value.wire = malloc(sizeof(char) * strlen(token->value.string));
+      strncpy(operand->value.wire, token->value.string,
+              strlen(token->value.string));
 
       token = parser_advance(parser);
       if (token == NULL) {
@@ -165,56 +239,79 @@ int parse(linked_list_t *instructions, parser_t *parser) {
         return AOC_ERR;
       }
 
-      switch (token->type) {
-      case LSHIFT:
-        binary_operation->operator_type = LSHIFT_O;
-        break;
-      case RSHIFT:
-        binary_operation->operator_type = RSHIFT_O;
-        break;
-      case AND:
-        binary_operation->operator_type = AND_O;
-        break;
-      case OR:
-        binary_operation->operator_type = OR_O;
-        break;
-      default:
-        parser_errorf(parser, "expected binary operation type\n");
-        return AOC_ERR;
+      if (token->type == ARROW) {
+        assignment_operation =
+            (assignment_operation_t *)malloc(sizeof(assignment_operation_t));
+        assignment_operation->operand = operand;
+
+        operation = (operation_t *)malloc(sizeof(operation_t));
+        operation->type = ASSIGNMENT;
+        operation->operation.assignment = assignment_operation;
+      } else {
+
+        binary_operation =
+            (binary_operation_t *)malloc(sizeof(binary_operation_t));
+        binary_operation->left = operand;
+
+        switch (token->type) {
+        case LSHIFT:
+          binary_operation->operator_type = LSHIFT_O;
+          break;
+        case RSHIFT:
+          binary_operation->operator_type = RSHIFT_O;
+          break;
+        case AND:
+          binary_operation->operator_type = AND_O;
+          break;
+        case OR:
+          binary_operation->operator_type = OR_O;
+          break;
+        default:
+          parser_errorf(parser, "expected binary operation token\n");
+          return AOC_ERR;
+        }
+
+        token = parser_advance(parser);
+        if (token == NULL) {
+          parser_errorf(parser, "unexpected end of input\n");
+          return AOC_ERR;
+        }
+
+        operand = (operand_t *)malloc(sizeof(operand_t));
+        switch (token->type) {
+        case IDENTIFIER:
+          operand->type = WIRE;
+          operand->value.wire =
+              malloc(sizeof(char) * strlen(token->value.string));
+          strncpy(operand->value.wire, token->value.string,
+                  strlen(token->value.string));
+          break;
+        case NUMBER:
+          operand->type = LITERAL;
+          operand->value.literal = token->value.number;
+          break;
+        default:
+          parser_errorf(parser, "expected identifier or number token\n");
+          return AOC_ERR;
+        }
+
+        binary_operation->right = operand;
+        operation = (operation_t *)malloc(sizeof(operation_t));
+        operation->type = BINARY;
+        operation->operation.binary = binary_operation;
+
+        token = parser_advance(parser);
+        if (token == NULL || token->type != ARROW) {
+          parser_errorf(parser, "expected arrow\n");
+          return AOC_ERR;
+        }
       }
 
-      token = parser_advance(parser);
-      if (token == NULL) {
-        parser_errorf(parser, "unexpected end of input\n");
-        return AOC_ERR;
-      }
-
-      operand = (operand_t *)malloc(sizeof(operand_t));
-      switch (token->type) {
-      case IDENTIFIER:
-        operand->type = WIRE;
-        operand->value.wire = token->value.string;
-        break;
-      case NUMBER:
-        operand->type = LITERAL;
-        operand->value.literal = token->value.number;
-        break;
-      default:
-        parser_errorf(parser, "expected identifier or number token\n");
-        return AOC_ERR;
-      }
-
-      binary_operation->right = operand;
-
-      token = parser_advance(parser);
-      if (token == NULL || token->type != ARROW) {
-        parser_errorf(parser, "expected arrow\n");
-        return AOC_ERR;
-      }
+      instruction.input = operation;
 
       token = parser_advance(parser);
       if (token == NULL || token->type != IDENTIFIER) {
-        parser_errorf(parser, "expected identifier\n");
+        parser_errorf(parser, "expected identifier (identifier)\n");
         return AOC_ERR;
       }
 
@@ -224,16 +321,23 @@ int parse(linked_list_t *instructions, parser_t *parser) {
               strlen(token->value.string));
 
       linked_list_add(instructions, &instruction, sizeof(instruction));
-      if (binary_operation->right->type == WIRE) {
-        printf("Added Binary Operation: %s %d %s | %s\n",
-               binary_operation->left->value.wire,
-               binary_operation->operator_type,
-               binary_operation->right->value.wire, instruction.output_wire);
+      if (operation->type == ASSIGNMENT) {
+        printf("Added Assignment Operation: %d | %s\n",
+               assignment_operation->operand->value.signal,
+               instruction.output_wire);
       } else {
-        printf("Added Binary Operation: %s %d %d | %s\n",
-               binary_operation->left->value.wire,
-               binary_operation->operator_type,
-               binary_operation->right->value.literal, instruction.output_wire);
+        if (binary_operation->right->type == WIRE) {
+          printf("Added Binary Operation: %s %d %s | %s\n",
+                 binary_operation->left->value.wire,
+                 binary_operation->operator_type,
+                 binary_operation->right->value.wire, instruction.output_wire);
+        } else {
+          printf("Added Binary Operation: %s %d %d | %s\n",
+                 binary_operation->left->value.wire,
+                 binary_operation->operator_type,
+                 binary_operation->right->value.literal,
+                 instruction.output_wire);
+        }
       }
       break;
     case ARROW:
@@ -274,6 +378,9 @@ void instruction_free(void *vinstruction) {
   switch (instruction->input->type) {
   case ASSIGNMENT:
     assignment_operation = instruction->input->operation.assignment;
+    if (assignment_operation->operand->type == WIRE) {
+      free(assignment_operation->operand->value.wire);
+    }
     free(assignment_operation->operand);
     printf("Freed assignment operation\n");
     break;
