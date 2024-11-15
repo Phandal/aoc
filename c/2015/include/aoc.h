@@ -21,6 +21,7 @@ enum {
 typedef struct node {
   void *data;
   struct node *next;
+  struct node *prev;
 } node_t;
 
 typedef struct {

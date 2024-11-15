@@ -52,11 +52,13 @@ size_t linked_list_add(linked_list_t *list, void *data, size_t nbytes) {
   temp->next = NULL;
 
   if (list->node == NULL) {
+    temp->prev = NULL;
     list->node = temp;
   } else {
     for (node = list->node; node->next != NULL; node = node->next)
       ;
 
+    temp->prev = node;
     node->next = temp;
   }
   return ++(list->length);

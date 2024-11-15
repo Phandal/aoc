@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra
 
 all: part1 part2
 
-part1: src/part1.o src/lexer.o
+part1: src/part1.o src/lexer.o src/parser.o
 	$(CC) $(CFLAGS) -L../lib -o part1 $^ -laoc
 
 part2: src/part2.o
