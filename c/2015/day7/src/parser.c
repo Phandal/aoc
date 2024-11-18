@@ -374,7 +374,6 @@ void instruction_free(void *vinstruction) {
   unary_operation_t *unary_operaton = NULL;
   assignment_operation_t *assignment_operation = NULL;
 
-  free(instruction->output_wire);
   switch (instruction->input->type) {
   case ASSIGNMENT:
     assignment_operation = instruction->input->operation.assignment;
@@ -382,12 +381,14 @@ void instruction_free(void *vinstruction) {
       free(assignment_operation->operand->value.wire);
     }
     free(assignment_operation->operand);
+    free(assignment_operation);
     printf("Freed assignment operation\n");
     break;
   case UNARY:
     unary_operaton = instruction->input->operation.unary;
     free(unary_operaton->operand->value.wire);
     free(unary_operaton->operand);
+    free(unary_operaton);
     printf("Freed unary operation\n");
     break;
   case BINARY:
@@ -396,6 +397,7 @@ void instruction_free(void *vinstruction) {
       free(binary_operation->left->value.wire);
     }
     free(binary_operation->left);
+    free(binary_operation);
     if (binary_operation->right->type == WIRE) {
       free(binary_operation->right->value.wire);
     }
@@ -408,5 +410,6 @@ void instruction_free(void *vinstruction) {
   }
 
   free(instruction->input);
+  free(instruction->output_wire);
   free(instruction);
 }
