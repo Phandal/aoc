@@ -216,9 +216,7 @@ int interpret(linked_list_t *wires, interpreter_t *interpreter) {
       wire->name = instruction->output_wire;
 
       found_wire = linked_list_find(wires, wire, wire_compare);
-      if (found_wire != NULL) {
-        /*found_wire->signal = wire->signal;*/
-      } else {
+      if (found_wire == NULL) {
         linked_list_add(wires, wire, sizeof(wire_t));
       }
 

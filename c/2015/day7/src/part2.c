@@ -72,6 +72,7 @@ int main(void) {
     wire_t *wire = node->data;
     printf("name: %s | signal: %hu\n", wire->name, wire->signal);
   }
+  putchar('\n');
 
   linked_list_free(&tokens, token_free);
   /*printf("Freed tokens\n");*/
