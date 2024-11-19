@@ -32,8 +32,8 @@ typedef struct {
   operand_type_e type;
   union {
     char *wire;
-    int signal;
-    int literal;
+    unsigned int signal;
+    unsigned int literal;
   } value;
 } operand_t;
 

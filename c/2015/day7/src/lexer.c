@@ -76,7 +76,7 @@ int tokenize(linked_list_t *tokens, lexer_t *lexer, char *line, size_t len) {
 
   token_t token = {0};
   int c;
-  int number;
+  unsigned int number;
   char buffer[BUFFER_MAX_SIZE];
   int buffer_index = 0;
 

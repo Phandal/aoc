@@ -20,7 +20,7 @@ typedef enum {
 typedef struct {
   token_type_e type;
   union {
-    int number;
+    unsigned int number;
     char *string;
   } value;
 } token_t;

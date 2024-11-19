@@ -362,6 +362,10 @@ int parse(linked_list_t *instructions, parser_t *parser) {
 }
 
 void parser_destroy(parser_t *parser) {
+  if (parser == NULL) {
+    return;
+  }
+
   if (parser->error != NULL) {
     free(parser->error);
   }
@@ -382,14 +386,14 @@ void instruction_free(void *vinstruction) {
     }
     free(assignment_operation->operand);
     free(assignment_operation);
-    printf("Freed assignment operation\n");
+    /*printf("Freed assignment operation\n");*/
     break;
   case UNARY:
     unary_operaton = instruction->input->operation.unary;
     free(unary_operaton->operand->value.wire);
     free(unary_operaton->operand);
     free(unary_operaton);
-    printf("Freed unary operation\n");
+    /*printf("Freed unary operation\n");*/
     break;
   case BINARY:
     binary_operation = instruction->input->operation.binary;
@@ -397,12 +401,12 @@ void instruction_free(void *vinstruction) {
       free(binary_operation->left->value.wire);
     }
     free(binary_operation->left);
-    free(binary_operation);
     if (binary_operation->right->type == WIRE) {
       free(binary_operation->right->value.wire);
     }
     free(binary_operation->right);
-    printf("Freed binary operation\n");
+    free(binary_operation);
+    /*printf("Freed binary operation\n");*/
     break;
   default:
     printf("Did not free unknown operation type: %d\n",
