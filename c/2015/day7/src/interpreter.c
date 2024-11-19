@@ -189,7 +189,10 @@ int interpret(linked_list_t *wires, interpreter_t *interpreter) {
       }
     }
 
-    wire->name = instruction->output_wire;
+    wire->name =
+        (char *)malloc(sizeof(char) * strlen(instruction->output_wire));
+    strncpy(wire->name, instruction->output_wire,
+            strlen(instruction->output_wire));
 
     found_wire = linked_list_find(wires, wire, wire_compare);
     if (found_wire != NULL) {
