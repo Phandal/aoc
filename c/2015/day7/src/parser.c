@@ -67,6 +67,8 @@ int parse(linked_list_t *instructions, parser_t *parser) {
   assignment_operation_t *assignment_operation = NULL;
   operand_t *operand = NULL;
 
+  instruction.execution = NON_EXECUTED;
+
   for (token = parser_advance(parser); token != NULL;
        token = parser_advance(parser)) {
     switch (token->type) {

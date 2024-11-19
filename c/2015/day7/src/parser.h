@@ -6,6 +6,11 @@
 #include <aoc.h>
 
 typedef enum {
+  EXECUTED,
+  NON_EXECUTED,
+} execution_status_e;
+
+typedef enum {
   BINARY,
   UNARY,
   ASSIGNMENT,
@@ -62,6 +67,7 @@ typedef struct {
 } operation_t;
 
 typedef struct {
+  execution_status_e execution;
   operation_t *input;
   char *output_wire;
 } instruction_t;
