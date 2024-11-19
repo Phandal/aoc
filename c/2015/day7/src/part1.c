@@ -63,10 +63,16 @@ int main(void) {
   }
 
   linked_list_free(&tokens, token_free);
+  /*printf("Freed tokens\n");*/
   linked_list_free(&instructions, instruction_free);
+  /*printf("Freed instructions\n");*/
   linked_list_free(&wires, wire_free);
+  /*printf("Freed wires\n");*/
   lexer_destroy(lexer);
+  printf("Destroyed lexer\n");
   parser_destroy(parser);
+  printf("Destroyed parser\n");
   interpreter_destroy(interpreter);
+  printf("Destroyed interpreter\n");
   return 0;
 }
