@@ -74,10 +74,10 @@ int stream_buffer_peekchar(stream_t *stream) {
   assert(stream != NULL);
   assert(stream->type == BUFFER_STREAM);
 
-  if (stream->position < stream->len - 1) {
+  if (stream->position >= stream->len - 1) {
     return EOF;
   } else {
-    return ((char *)stream->object)[stream->position + 1];
+    return ((char *)stream->object)[stream->position];
   }
 }
 
@@ -98,6 +98,26 @@ int stream_peekchar(stream_t *stream) {
   default:
     return EOF;
   }
+}
+
+int stream_charat(stream_t *stream, size_t index) {
+  assert(stream != NULL);
+
+  switch (stream->type) {
+  case BUFFER_STREAM:
+    if (index >= stream->len || index < 0) {
+      return EOF;
+    }
+    return ((char *)stream->object)[index];
+  default:
+    return EOF;
+  }
+}
+
+size_t stream_length(stream_t *stream) {
+  assert(stream != NULL);
+
+  return stream->len;
 }
 
 void stream_close(stream_t *stream) {
@@ -123,12 +143,14 @@ unsigned long get_escaped_length(char *line, size_t len) {
   unsigned long mem_len = 0;
 
   while ((c = stream_getchar(stream)) != EOF) {
+    if (c == ' ' || c == '\n' || c == '\t') {
+      continue;
+    }
+
     if (c == '\\') {
       c = stream_peekchar(stream);
-      putchar(c);
 
       if (c == '\\' || c == '"') {
-        printf("here\n");
         stream_getchar(stream);
       } else if (c == 'x') {
         stream_getchar(stream);
@@ -139,7 +161,7 @@ unsigned long get_escaped_length(char *line, size_t len) {
           if (isdigit(c)) {
             stream_getchar(stream);
           } else {
-            mem_len += 1;
+            mem_len += 2;
           }
         } else {
           mem_len += 1;
@@ -147,6 +169,14 @@ unsigned long get_escaped_length(char *line, size_t len) {
       }
     }
     mem_len += 1;
+  }
+
+  if ((c = stream_charat(stream, 0)) == '"') {
+    mem_len -= 1;
+  }
+
+  if ((c = stream_charat(stream, stream_length(stream) - 1)) == '"') {
+    mem_len -= 1;
   }
 
   stream_close(stream);
@@ -169,10 +199,10 @@ int main(void) {
     memory_length += mlen;
 
     printf("%10lu | %10lu | %s\n", slen, mlen, line);
-    break;
   }
 
-  printf("Result: %lu\n", code_length - memory_length);
+  printf("code: %lu | memory: %lu | Result: %lu\n", code_length, memory_length,
+         code_length - memory_length);
 
   return 0;
 }
