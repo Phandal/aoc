@@ -10,7 +10,7 @@ part2: src/part2.o
 	$(CC) $(CFLAGS) -L../lib -o part2 $^ -laoc
 
 src/%.o: src/%.c
-	$(CC) $(CFLAGS) -I../include -c -o $@ $^
+	$(CC) $(CFLAGS) -I../include -glldb -c -o $@ $^
 
 .PHONY: clean
 clean:

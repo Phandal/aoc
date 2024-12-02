@@ -81,6 +81,33 @@ void *linked_list_find(linked_list_t *list, void *data, equal_fn equal_fn) {
   return NULL;
 }
 
+int linked_list_sort(linked_list_t *list, sort_fn sort_fn) {
+  node_t *prev;
+  node_t *current;
+  void *temp;
+  int sorted = 0;
+
+  while (!sorted) {
+    prev = NULL;
+    sorted = 1;
+    for (current = list->node; current != NULL; current = current->next) {
+      if (prev != NULL) {
+        int result = sort_fn(prev->data, current->data);
+
+        if (result > 0) {
+          temp = current->data;
+          current->data = prev->data;
+          prev->data = temp;
+          sorted = 0;
+        }
+      }
+      prev = current;
+    }
+  }
+
+  return AOC_OK;
+}
+
 void linked_list_free(linked_list_t *list, free_fn free_fn) {
   assert(list != NULL);
 

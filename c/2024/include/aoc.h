@@ -30,10 +30,12 @@ typedef struct {
 } linked_list_t;
 
 typedef int (*equal_fn)(void *, void *);
+typedef int (*sort_fn)(void *, void *);
 typedef void (*free_fn)(void *);
 
 size_t linked_list_add(linked_list_t *list, void *data, size_t nbytes);
 void *linked_list_find(linked_list_t *list, void *data, equal_fn equals_fn);
+int linked_list_sort(linked_list_t *list, sort_fn sort_fn);
 void linked_list_free(linked_list_t *list, free_fn free_fn);
 
 #endif // AOC_H
