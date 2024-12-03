@@ -110,7 +110,6 @@ int main(void) {
     if (check_if_report_is_safe(&report) != AOC_OK) {
       aoc_fatalf("Failed to check if report is safe");
     };
-    putchar('\n');
 
     if (report.safe == SAFE) {
       total_safe_reports += 1;
@@ -118,6 +117,8 @@ int main(void) {
     } else {
       printf("UNSAFE\n");
     }
+
+    putchar('\n');
   }
 
   printf("Total safe reports: %ld\n", total_safe_reports);
