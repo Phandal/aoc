@@ -1,0 +1,13 @@
+(lang dune 3.15)
+
+(name twozerotwofour)
+
+(generate_opam_files true)
+
+(package
+ (name twozerotwofour)
+ (synopsis "A short synopsis")
+ (description "A longer description")
+ (depends ocaml dune))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

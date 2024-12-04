@@ -4,5 +4,8 @@ c/**/part1
 c/**/part2
 c/**/.cache/*
 c/**/compile_commands.json
+
 javascript/**/node_modules/*
 javascript/**/package-lock.json
+
+ocaml/**/_build/*
