@@ -1,4 +1,0 @@
-(executables
- (public_names day1 day2)
- (names day1 day2)
- (libraries aoc))

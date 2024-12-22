@@ -1,1 +1,1 @@
-val read_lines : unit -> string list
+val read_file : string -> string list
