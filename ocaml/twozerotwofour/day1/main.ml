@@ -1,32 +1,49 @@
-let compare_parts acc f s =
-  let difference = Int.abs (f - s) in
-  acc + difference
-
-let process_lists (f, s) =
-  let fs = List.sort Int.compare f in
-  let ss = List.sort Int.compare s in
-  List.fold_left2 compare_parts 0 fs ss
-
-let reduce_parts (fl, sl) parts =
-  match parts with Ok (f, s) -> (f :: fl, s :: sl) | Error _ -> (fl, sl)
-
-let parse_line s =
-  let parts = String.split_on_char ' ' s |> List.filter Dopo.not_empty in
-  let length = List.length parts in
-  if length <> 2 then
-    Error
-      (Printf.sprintf "line \"%s\" must contain exactly 2 numbers: %d given" s
-         length)
-  else Ok (List.nth parts 0 |> int_of_string, List.nth parts 1 |> int_of_string)
-
-let day1 f =
-  let lists =
-    Aoc.read_file f |> List.map parse_line
-    |> List.fold_left reduce_parts ([], [])
+let parts line =
+  let filtered =
+    String.split_on_char ' ' line |> List.filter (fun x -> x <> "")
   in
-  process_lists lists
+  (List.nth filtered 0 |> int_of_string, List.nth filtered 1 |> int_of_string)
 
-(*let () = day1 "input/input_day_01_test.txt"*)
+let fold_parts (fa, sa) line =
+  let f, s = parts line in
+  (f :: fa, s :: sa)
+
+let parse_lines lines = List.fold_left fold_parts ([], []) lines
+
+let abs_difference (f, s) =
+  let f, s = (List.sort compare f, List.sort compare s) in
+  List.fold_left2 (fun acc f s -> acc + abs (f - s)) 0 f s
+
+let assoc_left_right (f, s) =
+  let alist =
+    List.fold_left
+      (fun acc i ->
+        let len = List.find_all (fun ss -> ss == i) s |> List.length in
+        (i, len) :: acc)
+      [] f
+  in
+  List.fold_left (fun acc i -> acc + (i * List.assoc i alist)) 0 f
+
+let part1 fn =
+  fn |> Aoc.read_file |> Result.map parse_lines |> Result.map abs_difference
+
+let part2 fn =
+  fn |> Aoc.read_file |> Result.map parse_lines |> Result.map assoc_left_right
+
 let () =
-  let result = day1 "input/input_day_01.txt" in
-  Printf.printf "Day 1 result: %d\n" result
+  let filename = Aoc.default_file "input/input_day_01.txt" Sys.argv in
+  let part1_result =
+    Result.fold
+      ~ok:(fun acc -> string_of_int acc)
+      ~error:(fun e -> Printf.sprintf "Error: %s" e)
+      (part1 filename)
+  in
+
+  let part2_result =
+    Result.fold
+      ~ok:(fun acc -> string_of_int acc)
+      ~error:(fun e -> Printf.sprintf "Error: %s" e)
+      (part2 filename)
+  in
+
+  Printf.printf "Part1: %s\nPart2: %s\n" part1_result part2_result

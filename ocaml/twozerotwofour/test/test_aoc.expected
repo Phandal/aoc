@@ -1,0 +1,4 @@
+known: this is a line, this is another line, this is the last line
+unknown: test/unknown.txt: No such file or directory
+supplied: one
+not supplied: test
