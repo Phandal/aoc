@@ -1,12 +1,4 @@
 let test_read_file () =
-  let known =
-    Result.fold
-      ~ok:(List.fold_left (fun acc i -> Printf.sprintf "%s, %s" acc i) "")
-      ~error:Fun.id
-      (Aoc.read_file "test/test.txt")
-  in
-  Printf.printf "known: %s\n" known;
-
   let unknown =
     Result.fold
       ~ok:(List.fold_left (fun acc i -> Printf.sprintf "%s, %s" acc i) "")
@@ -28,5 +20,4 @@ let test_default_file () =
 
 let () =
   test_read_file ();
-  test_default_file ();
-  Printf.printf "%s\n" (Sys.getcwd ())
+  test_default_file ()
