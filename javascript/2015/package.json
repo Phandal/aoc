@@ -1,9 +1,11 @@
 {
   "scripts": {
+    "day1": "node day1/index.js",
+    "day2": "node day2/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
   "devDependencies": {
-    "@types/node": "^22.9.0"
+    "@types/node": "^22.10.2"
   }
 }
